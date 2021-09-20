@@ -1,0 +1,56 @@
+root@osmaster:~/Kubernetes#
+root@osmaster:~/Kubernetes# mdkir Replication-controller
+c
+Command 'mdkir' not found, did you mean:
+
+  command 'mdir' from deb mtools (4.0.24-1)
+  command 'mkdir' from deb coreutils (8.30-3ubuntu2)
+
+Try: apt install <deb name>
+
+root@osmaster:~/Kubernetes# mkdir Replication-controller
+root@osmaster:~/Kubernetes# cd Replication-controller/
+root@osmaster:~/Kubernetes/Replication-controller#
+root@osmaster:~/Kubernetes/Replication-controller# vi replication-controller.yaml
+root@osmaster:~/Kubernetes/Replication-controller#
+root@osmaster:~/Kubernetes/Replication-controller#
+root@osmaster:~/Kubernetes/Replication-controller# kube
+kubeadm  kubectl  kubelet
+root@osmaster:~/Kubernetes/Replication-controller# kubectl create -f replication-controller.yaml
+error: error validating "replication-controller.yaml": error validating data: [ValidationError(ReplicationController): unknown field "Replicas" in io.k8s.api.core.v1.ReplicationController, ValidationError(ReplicationController): unknown field "Selector" in io.k8s.api.core.v1.ReplicationController]; if you choose to ignore these errors, turn validation off with --validate=false
+root@osmaster:~/Kubernetes/Replication-controller# vi replication-controller.yaml
+root@osmaster:~/Kubernetes/Replication-controller# kubectl create -f replication-controller.yaml
+error: error validating "replication-controller.yaml": error validating data: [ValidationError(ReplicationController.spec.template): unknown field "replicas" in io.k8s.api.core.v1.PodTemplateSpec, ValidationError(ReplicationController.spec.template): unknown field "selector" in io.k8s.api.core.v1.PodTemplateSpec]; if you choose to ignore these errors, turn validation off with --validate=false
+root@osmaster:~/Kubernetes/Replication-controller# vi replication-controller.yaml
+root@osmaster:~/Kubernetes/Replication-controller# kubectl create -f replication-controller.yaml
+replicationcontroller/myapp-rc created
+root@osmaster:~/Kubernetes/Replication-controller# kubectl get pods
+NAME             READY   STATUS              RESTARTS   AGE
+myapp-pod        1/1     Running             0          40m
+myapp-rc-bgx2j   0/1     ContainerCreating   0          6s
+myapp-rc-fl647   0/1     ContainerCreating   0          6s
+myapp-rc-jlg2h   0/1     ContainerCreating   0          6s
+root@osmaster:~/Kubernetes/Replication-controller# kubectl get pods
+NAME             READY   STATUS    RESTARTS   AGE
+myapp-pod        1/1     Running   0          40m
+myapp-rc-bgx2j   1/1     Running   0          19s
+myapp-rc-fl647   1/1     Running   0          19s
+myapp-rc-jlg2h   1/1     Running   0          19s
+root@osmaster:~/Kubernetes/Replication-controller# vi replication-controller.yaml
+root@osmaster:~/Kubernetes/Replication-controller# kubectl apply -f replication-controller.yaml
+Warning: resource replicationcontrollers/myapp-rc is missing the kubectl.kubernetes.io/last-applied-configuration annotation which is required by kubectl apply. kubectl apply should only be used on resources created declaratively by either kubectl create --save-config or kubectl apply. The missing annotation will be patched automatically.
+replicationcontroller/myapp-rc configured
+root@osmaster:~/Kubernetes/Replication-controller# kubectl get pods
+NAME             READY   STATUS    RESTARTS   AGE
+myapp-pod        1/1     Running   0          41m
+myapp-rc-fl647   1/1     Running   0          67s
+myapp-rc-jlg2h   1/1     Running   0          67s
+root@osmaster:~/Kubernetes/Replication-controller# kubectl get nodes
+NAME       STATUS   ROLES                  AGE   VERSION
+osmaster   Ready    control-plane,master   14d   v1.22.1
+osnode     Ready    <none>                 13d   v1.22.1
+root@osmaster:~/Kubernetes/Replication-controller# kubectl get nodes -o wide
+NAME       STATUS   ROLES                  AGE   VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+osmaster   Ready    control-plane,master   14d   v1.22.1   192.168.0.149   <none>        Ubuntu 20.04.3 LTS   5.11.0-27-generic   docker://20.10.8
+osnode     Ready    <none>                 13d   v1.22.1   192.168.0.123   <none>        Ubuntu 20.04.3 LTS   5.11.0-27-generic   docker://20.10.8
+
